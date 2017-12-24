@@ -1,5 +1,8 @@
-﻿public enum EnumRole
+﻿namespace Script
 {
-	citizen,
-	werewolf,
+	public enum EnumRole
+	{
+		Citizen,
+		Werewolf,
+	}
 }

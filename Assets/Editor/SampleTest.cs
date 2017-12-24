@@ -1,10 +1,6 @@
-﻿using UnityEngine;
-using UnityEditor;
-using UnityEngine.TestTools;
-using NUnit.Framework;
-using System.Collections;
-
-public class SampleTest {
+﻿namespace Editor
+{
+    public class SampleTest {
 
 //	[Test]
 //	public void SampleTestSimplePasses() {
@@ -20,4 +16,5 @@ public class SampleTest {
 ////		// yield to skip a frame
 ////		yield return null;
 ////	}
+    }
 }
