@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 namespace Script
 {
 	public static class Extensions {
-		// reffer this page: https://stackoverflow.com/questions/273313/randomize-a-listt
+		// refer this page: https://stackoverflow.com/questions/273313/randomize-a-listt
 		public static List<T> Shuffle<T>(this List<T> list) {
 			var provider = new RNGCryptoServiceProvider();
 			var n = list.Count;
