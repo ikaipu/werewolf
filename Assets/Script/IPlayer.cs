@@ -7,7 +7,7 @@ namespace Script
 		string  id { get; }
 		
 		EnumRole role { get; set; }
-		int votedNum { get; }
+		int votedNum { get; set; }
 
 		void Vote(List<IPlayer> players);
 	}

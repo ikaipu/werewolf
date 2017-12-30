@@ -36,6 +36,7 @@ namespace Script
 				EnumRole.Citizen,
 				EnumRole.Werewolf
 			};
+			
 			gameManager.AssignRoles (roles);
 			gameManager.StartVotingPhase ();
 			gameManager.ShowResult ();

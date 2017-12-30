@@ -26,7 +26,7 @@ namespace Script
 		public void StartVotingPhase(){
 			_players.ForEach (player => player.Vote (_players));
 			Debug.Log ("Vote Result:");
-			this._players.ForEach (player => Debug.Log(player.id + ":" + player.votedNum));
+			_players.ForEach (player => Debug.Log(player.id + ":" + player.votedNum));
 		}
 		
 		public void ShowResult() {
