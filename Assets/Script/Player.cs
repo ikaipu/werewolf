@@ -3,39 +3,21 @@ using UnityEngine;
 
 namespace Script
 {
-	public class Player  {
-		private readonly string _id;
-		private EnumRole _role;
-		private int _votedNum = 0;
+	public class Player : IPlayer {
+		public string id { get; }
+		public EnumRole role { get; set; }
+		public int votedNum { get; private set; }
 
 		public Player(string id ) {
-			this._id = id;
-		}
-		public string GetId() {
-			return this._id;
+			this.id = id;
 		}
 
-		public EnumRole GetRole () {
-			return _role;
-		}
-
-		public void SetRole (EnumRole role) {
-			this._role = role;
-		}
-
-		public void Vote(List<Player> players) {
-			var candidates = players.FindAll (player => player.GetId () != this._id);
+		public void Vote(List<IPlayer> players) {
+			var candidates = players.FindAll (player => player.id != id);
 			var votedPlayer = candidates [Random.Range (0, candidates.Count)];
-			Debug.Log(this.GetId() + " => " + votedPlayer.GetId());
-			votedPlayer.AddVotedNum ();
+			Debug.Log(id + " => " + votedPlayer.id);
+			votedNum ++;
 		}
 
-		private void AddVotedNum () {
-			this._votedNum++;
-		}
-
-		public int GetVotedNum () {
-			return this._votedNum;
-		}
 	}
 }
