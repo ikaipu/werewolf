@@ -14,7 +14,7 @@ namespace Script
 			{
 				var box = new byte[1];
 				do provider.GetBytes(box);
-				while (!(box[0] < n * (Byte.MaxValue / n)));
+				while (!(box[0] < n * (byte.MaxValue / n)));
 				var k = (box[0] % n);
 				n--;
 				var value = shuffledList[k];

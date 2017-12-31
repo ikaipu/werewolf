@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Script
 {
@@ -11,7 +13,7 @@ namespace Script
 		{
 			_players = players;
 			Debug.Log ("Players:");
-			_players.ForEach (Debug.Log);
+			_players.ForEach (player => Debug.Log(player.id));
 		}
 
 		public void AssignRoles(List<EnumRole> roles) {
@@ -24,7 +26,15 @@ namespace Script
 		}
 
 		public void StartVotingPhase(){
-			_players.ForEach (player => player.Vote (_players));
+			for (var i = 0; i < _players.Count; i++)
+			{
+				Func<string> RandomSelectPlayer = () =>
+				{
+					var candidates = _players.FindAll(player => player.id != _players[i].id);
+					return candidates [Random.Range (0, candidates.Count)].id;
+				};
+				_players[i].Vote(_players, RandomSelectPlayer);
+			}
 			Debug.Log ("Vote Result:");
 			_players.ForEach (player => Debug.Log(player.id + ":" + player.votedNum));
 		}

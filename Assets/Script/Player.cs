@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Script
 {
@@ -7,17 +9,15 @@ namespace Script
 		public string id { get; }
 		public EnumRole role { get; set; }
 		public int votedNum { get; set; }
+		public void Vote(List<IPlayer> players, Func<string> SelectPlayerId)
+		{
+			var selectedPlayerId = SelectPlayerId();
+			var votedPlayer = players.Find(player => player.id == selectedPlayerId);
+			votedPlayer.votedNum++;
+		}
 
 		public Player(string id ) {
 			this.id = id;
 		}
-
-		public void Vote(List<IPlayer> players) {
-			var candidates = players.FindAll (player => player.id != id);
-			var votedPlayer = candidates [Random.Range (0, candidates.Count)];
-			Debug.Log(id + " => " + votedPlayer.id);
-			votedPlayer.votedNum ++;
-		}
-
 	}
 }
