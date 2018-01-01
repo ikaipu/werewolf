@@ -20,12 +20,14 @@ namespace Script
                 "John",
                 "Gong",
                 "Ketchup",
+                "Mark",
                 "You"
             };
             _players = playerIds.ConvertAll(id => (IPlayer) new Player(id));
 
             var roles = new List<EnumRole>
             {
+                EnumRole.Citizen,
                 EnumRole.Citizen,
                 EnumRole.Citizen,
                 EnumRole.Citizen,
@@ -53,18 +55,19 @@ namespace Script
             buttonList.ForEach(Button => { Button.enabled = true; });
             while (true)
             {
-                if (count % 10 == 0)
-                {
-                    if(count != 0) {_gameManager.executePlayer();}
-                    _players.ForEach(player => { player.voteFor = ""; });
-                    _gameManager.ProcessVotingPhase();
-                }
-
                 timeCounter.text = count.ToString();
-                count++;
-                yield return new WaitForSeconds(1.0f);
-                yield return null;
+                if(count % 10 == 0 && count != 0) {_gameManager.executePlayer();}
+                
                 var livingPlayers = _players.FindAll(player => !player.isDead);
+                if (_players.Find(player => player.id == "You").isDead)
+                {
+                    buttonList.ForEach(Button => { Button.enabled = false; });
+                }
+                for (var i = 0; i < buttonList.Count; i++)
+                {
+                    if (_players[i].isDead) buttonList[i].enabled = false;
+                }
+                
                 if (livingPlayers.FindAll(p => p.role == EnumRole.Werewolf).Count ==
                     livingPlayers.FindAll(p => p.role == EnumRole.Citizen).Count)
                 {
@@ -76,12 +79,20 @@ namespace Script
                     Debug.Log("Citizen Team Win!!!");
                     yield break;
                 }
+                yield return new WaitForSeconds(1.0f);
+                yield return null;
+                if (count % 10 == 0)
+                {
+                    _players.ForEach(player => { player.voteFor = ""; });
+                    _gameManager.ProcessVotingPhase();
+                }
+                count++;
             }
         }
 
         private void AssignPlayerName()
         {
-            for (int i = 0; i < _players.Count; i++)
+            for (int i = 0; i < buttonList.Count; i++)
             {
                 buttonList[i].GetComponentInChildren<Text>().text = _players[i].id;
             }
