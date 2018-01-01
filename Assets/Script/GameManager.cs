@@ -23,11 +23,6 @@ namespace Script
 			InitPlayers(_players);
 			AssignRoles(_roles);
 		}
-
-		public void ProcessDayPhase()
-		{
-			
-		}
 		
 		public void ShowResult() {
 			var maxVotedNum = _players.ConvertAll (player => player.votedNum).Max ();
@@ -53,9 +48,7 @@ namespace Script
 				};
 				enemy.Vote(livingPlayers, RandomSelectPlayer);
 			}
-			Debug.Log ("Vote Result:");
-			livingPlayers.ForEach (player => Debug.Log(player.id + ":" + player.votedNum));
-			
+			Debug.Log ("Vote Result: " + string.Join(", ", livingPlayers.ConvertAll(p => p.id + ": " + p.votedNum ).ToArray()));
 		}
 
 		public void executePlayer()
@@ -64,7 +57,7 @@ namespace Script
 			if (votedPlayers.Count == 1)
 			{
 				votedPlayers[0].isDead = true;
-				Debug.Log("Player (" + votedPlayers[0].id + ") was Executed.");
+				Debug.Log("Player: \"" + votedPlayers[0].id + "\" was Executed.");
 			}
 			else
 			{
@@ -75,11 +68,10 @@ namespace Script
 		private void InitPlayers (List<IPlayer> players)
 		{
 			_players = players;
-			Debug.Log ("Players:");
+			Debug.Log("Players: " + string.Join(", ", _players.ConvertAll(p => p.id).ToArray()));
 			_players.ForEach (player =>
 			{
 				player.isDead = false;
-				Debug.Log(player.id);
 			});
 		}
 
@@ -88,8 +80,7 @@ namespace Script
 			for (var i = 0; i < _players.Count; i++) {
 				_players [i].role = shuffledRoles[i];
 			}
-			Debug.Log ("Assigned Roles:");
-			_players.ForEach (player => Debug.Log(player.id + ":" + player.role));
+			Debug.Log ("Assigned Roles: " + string.Join(", ", _players.ConvertAll(p => p.role.ToString()).ToArray()));
 		}
 	}
 }
