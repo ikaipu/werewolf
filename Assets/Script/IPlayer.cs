@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Script
 {
@@ -9,6 +8,7 @@ namespace Script
 		
 		EnumRole role { get; set; }
 		int votedNum { get; set; }
+		bool isDead { get; set; }
 
 		void Vote(List<IPlayer> players, Func<string> SelectPlayerId);
 	}

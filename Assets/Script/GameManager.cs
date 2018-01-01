@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using NUnit.Framework.Internal;
+using NUnit.Framework.Constraints;
+using UnityEngine;
+using UnityEngine.XR.WSA;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
@@ -10,7 +11,7 @@ namespace Script
 {
 	public class GameManager {
 		private List<IPlayer> _players { get; set; }
-		private List<EnumRole> _roles { get; set; }
+		private List<EnumRole> _roles { get; }
 
 		public GameManager(List<IPlayer> players, List<EnumRole> roles)
 		{
@@ -39,27 +40,47 @@ namespace Script
 
 		public void ProcessVotingPhase()
 		{
-			var enemies = _players.FindAll(player => player.id != "You");
+			var livingPlayers = _players.FindAll(player => !player.isDead);
+			var enemies = livingPlayers.FindAll(player => player.id != "You");
 			enemies.ForEach(enemy => Debug.Log(enemy));
 
 			foreach (IPlayer enemy in enemies)
 			{
 				Func<string> RandomSelectPlayer = () =>
 				{
-					var candidates = _players.FindAll(player => player.id != enemy.id);
+					var candidates = livingPlayers.FindAll(player => player.id != enemy.id);
 					return candidates [Random.Range (0, candidates.Count)].id;
 				};
-				enemy.Vote(_players, RandomSelectPlayer);
+				enemy.Vote(livingPlayers, RandomSelectPlayer);
 			}
 			Debug.Log ("Vote Result:");
-			_players.ForEach (player => Debug.Log(player.id + ":" + player.votedNum));
+			livingPlayers.ForEach (player => Debug.Log(player.id + ":" + player.votedNum));
+			
+		}
+
+		public void executePlayer()
+		{
+			var votedPlayers = _players.FindAll(player => player.votedNum == _players.Max(p => p.votedNum));
+			if (votedPlayers.Count == 1)
+			{
+				votedPlayers[0].isDead = true;
+				Debug.Log("Player (" + votedPlayers[0].id + ") was Executed.");
+			}
+			else
+			{
+				Debug.Log("No one was Executed.");
+			}
 		}
 
 		private void InitPlayers (List<IPlayer> players)
 		{
 			_players = players;
 			Debug.Log ("Players:");
-			_players.ForEach (player => Debug.Log(player.id));
+			_players.ForEach (player =>
+			{
+				player.isDead = false;
+				Debug.Log(player.id);
+			});
 		}
 
 		private void AssignRoles(List<EnumRole> roles) {

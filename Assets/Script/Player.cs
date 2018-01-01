@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Script
 {
@@ -9,6 +8,8 @@ namespace Script
 		public string id { get; }
 		public EnumRole role { get; set; }
 		public int votedNum { get; set; }
+		public bool isDead { get; set; }
+
 		public void Vote(List<IPlayer> players, Func<string> SelectPlayerId)
 		{
 			var selectedPlayerId = SelectPlayerId();
