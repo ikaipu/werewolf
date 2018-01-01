@@ -13,6 +13,7 @@ namespace Script
 		{
 			var selectedPlayerId = SelectPlayerId();
 			var votedPlayer = players.Find(player => player.id == selectedPlayerId);
+			Debug.Log(id + " => " + votedPlayer.id);
 			votedPlayer.votedNum++;
 		}
 

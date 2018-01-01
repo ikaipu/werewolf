@@ -59,7 +59,7 @@ GameObject:
   - component: {fileID: 114218973038005200}
   - component: {fileID: 114983898694398182}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: ScreenWerewolf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using NUnit.Framework.Internal;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
@@ -21,20 +22,13 @@ namespace Script
 			InitPlayers(_players);
 			AssignRoles(_roles);
 		}
-		
-		public System.Collections.IEnumerator PlayGame()
-		{
-			ProcessDayPhase();
-			yield return ProcessVotingPhase();
-			ShowResult();
-		}
 
-		private void ProcessDayPhase()
+		public void ProcessDayPhase()
 		{
 			
 		}
 		
-		private void ShowResult() {
+		public void ShowResult() {
 			var maxVotedNum = _players.ConvertAll (player => player.votedNum).Max ();
 			var executedPlayers = _players.FindAll (player => player.votedNum == maxVotedNum);
 			Debug.Log ("ExecutedPlayers:");
@@ -43,20 +37,22 @@ namespace Script
 			Debug.Log(isCitiznTeamWinner ? "Citizen team win!!" : "Werewolf team win!!");
 		}
 
-		private System.Collections.IEnumerator ProcessVotingPhase()
+		public void ProcessVotingPhase()
 		{
-			foreach (IPlayer _player in _players)
+			var enemies = _players.FindAll(player => player.id != "You");
+			enemies.ForEach(enemy => Debug.Log(enemy));
+
+			foreach (IPlayer enemy in enemies)
 			{
 				Func<string> RandomSelectPlayer = () =>
 				{
-					var candidates = _players.FindAll(player => player.id != _player.id);
+					var candidates = _players.FindAll(player => player.id != enemy.id);
 					return candidates [Random.Range (0, candidates.Count)].id;
 				};
-				_player.Vote(_players, RandomSelectPlayer);
+				enemy.Vote(_players, RandomSelectPlayer);
 			}
 			Debug.Log ("Vote Result:");
 			_players.ForEach (player => Debug.Log(player.id + ":" + player.votedNum));
-			yield return null;
 		}
 
 		private void InitPlayers (List<IPlayer> players)

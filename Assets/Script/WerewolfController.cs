@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,26 +10,20 @@ namespace Script
     public class WerewolfController : MonoBehaviour
     {
         public List<Button> ButtonList;
+        private List<IPlayer> _players { get; set; }
+        private readonly GameManager _gameManager;
 
-        // Use this for initialization
-        private void Start()
+        public WerewolfController()
         {
-            StartCoroutine(PlayGame());
-        }
-
-        private IEnumerator PlayGame()
-        {
-            ButtonList.ForEach(Button => { Button.enabled = false; });
-            Debug.Log("Start:");
             var playerIds = new List<string>
             {
-                "Takumi",
                 "John",
                 "Gong",
-                "Ketchup"
+                "Ketchup",
+                "You"
             };
-            AssignPlayerName(playerIds);
-            var players = playerIds.ConvertAll(id => (IPlayer) new Player(id));
+            _players = playerIds.ConvertAll(id => (IPlayer) new Player(id));
+            
             var roles = new List<EnumRole>
             {
                 EnumRole.Citizen,
@@ -39,19 +32,38 @@ namespace Script
                 EnumRole.Werewolf
             };
             
-            var gameManager = new GameManager(players, roles);
-
-            gameManager.PrepareGame();
-            yield return gameManager.PlayGame();
+            _gameManager = new GameManager(_players, roles);
         }
 
-        private void AssignPlayerName(List<string> playerIds)
+        // Use this for initialization
+        private void Start()
         {
-            for (int i = 0; i < playerIds.Count; i++)
+            ButtonList.ForEach(Button => { Button.enabled = false; });
+            Debug.Log("Start:");
+            AssignPlayerName();
+            
+            _gameManager.PrepareGame();
+            _gameManager.ProcessDayPhase();
+            _gameManager.ProcessVotingPhase();
+            ButtonList.ForEach(Button => { Button.enabled = true; });
+        }
+
+        private void AssignPlayerName()
+        {
+            for (int i = 0; i < _players.Count; i++)
             {
-                ButtonList[i].GetComponentInChildren<Text>().text = playerIds[i];
+                ButtonList[i].GetComponentInChildren<Text>().text = _players[i].id;
             }
-            //
+        }
+
+        public void OnClickPlayerButton(int index)
+        {
+            var you = _players.Find(player => player.id == "You");
+            you.Vote(_players, () => _players[index].id);
+            Debug.Log ("Vote Result:");
+            _players.ForEach (player => Debug.Log(player.id + ":" + player.votedNum));
+            _gameManager.ShowResult();
+            
         }
     }
 }
