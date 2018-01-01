@@ -25,12 +25,12 @@ namespace Script
 		}
 		
 		public void ShowResult() {
-			var maxVotedNum = _players.ConvertAll (player => player.votedNum).Max ();
-			var executedPlayers = _players.FindAll (player => player.votedNum == maxVotedNum);
-			Debug.Log ("ExecutedPlayers:");
-			executedPlayers.ForEach (player => Debug.Log(player.id + ":" + player.role));
-			var isCitiznTeamWinner = executedPlayers.Exists (player => player.role == EnumRole.Werewolf );
-			Debug.Log(isCitiznTeamWinner ? "Citizen team win!!" : "Werewolf team win!!");
+//			var maxVotedNum = _players.ConvertAll (player => player.votedNum).Max ();
+//			var executedPlayers = _players.FindAll (player => player.votedNum == maxVotedNum);
+//			Debug.Log ("ExecutedPlayers:");
+//			executedPlayers.ForEach (player => Debug.Log(player.id + ":" + player.role));
+//			var isCitiznTeamWinner = executedPlayers.Exists (player => player.role == EnumRole.Werewolf );
+//			Debug.Log(isCitiznTeamWinner ? "Citizen team win!!" : "Werewolf team win!!");
 		}
 
 		public void ProcessVotingPhase()
@@ -48,16 +48,20 @@ namespace Script
 				};
 				enemy.Vote(livingPlayers, RandomSelectPlayer);
 			}
-			Debug.Log ("Vote Result: " + string.Join(", ", livingPlayers.ConvertAll(p => p.id + ": " + p.votedNum ).ToArray()));
+			Debug.Log("Vote: " + string.Join(", ", _players.ConvertAll(p => p.id + " => " + p.voteFor).ToArray()));
+			Debug.Log ("Vote Result: " + string.Join(", ", livingPlayers.ConvertAll(p => p.id + ": " + livingPlayers.Count(p2 => p2.voteFor == p.id) ).ToArray()));
 		}
 
 		public void executePlayer()
 		{
-			var votedPlayers = _players.FindAll(player => player.votedNum == _players.Max(p => p.votedNum));
-			if (votedPlayers.Count == 1)
+			var idMapVoteNum = _players.ToDictionary(p => p.id, p => _players.Count(p2 => p2.voteFor == p.id));
+			var votedPlayersDic = idMapVoteNum.Where(e => e.Value == idMapVoteNum.Values.Max()).ToDictionary(e => e.Key, e => e.Value);
+			
+			if (votedPlayersDic.Count == 1)
 			{
-				votedPlayers[0].isDead = true;
-				Debug.Log("Player: \"" + votedPlayers[0].id + "\" was Executed.");
+				var votedPlayerId = _players.Find(player => player.id == votedPlayersDic.First().Key);
+				votedPlayerId.isDead = true;
+				Debug.Log("Player: \"" + votedPlayerId + "\" was Executed.");
 			}
 			else
 			{

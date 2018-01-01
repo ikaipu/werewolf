@@ -7,7 +7,7 @@ namespace Script
 		string  id { get; }
 		
 		EnumRole role { get; set; }
-		int votedNum { get; set; }
+		string voteFor { get; set; }
 		bool isDead { get; set; }
 
 		void Vote(List<IPlayer> players, Func<string> SelectPlayerId);

@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace Script
 {
@@ -55,7 +56,7 @@ namespace Script
                 if (count % 20 == 0)
                 {
                     if(count != 0) {_gameManager.executePlayer();}
-                    _players.ForEach(player => { player.votedNum = 0; });
+                    _players.ForEach(player => { player.voteFor = ""; });
                     _gameManager.ProcessVotingPhase();
                 }
 
@@ -78,6 +79,8 @@ namespace Script
         {
             var you = _players.Find(player => player.id == "You");
             you.Vote(_players, () => _players[index].id);
+            var livingPlayers = _players.FindAll(player => !player.isDead);
+            Debug.Log ("Vote Result: " + string.Join(", ", livingPlayers.ConvertAll(p => p.id + ": " + livingPlayers.Count(p2 => p2.voteFor == p.id) ).ToArray()));
 //            Debug.Log("Vote Result:");
 //            _players.ForEach(player => Debug.Log(player.id + ":" + player.votedNum));
 //            _gameManager.ShowResult();
