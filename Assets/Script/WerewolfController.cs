@@ -53,7 +53,7 @@ namespace Script
             buttonList.ForEach(Button => { Button.enabled = true; });
             while (true)
             {
-                if (count % 20 == 0)
+                if (count % 10 == 0)
                 {
                     if(count != 0) {_gameManager.executePlayer();}
                     _players.ForEach(player => { player.voteFor = ""; });
@@ -64,6 +64,18 @@ namespace Script
                 count++;
                 yield return new WaitForSeconds(1.0f);
                 yield return null;
+                var livingPlayers = _players.FindAll(player => !player.isDead);
+                if (livingPlayers.FindAll(p => p.role == EnumRole.Werewolf).Count ==
+                    livingPlayers.FindAll(p => p.role == EnumRole.Citizen).Count)
+                {
+                    Debug.Log("Werewolf Team Win!!!");
+                    yield break;
+                }
+                if (livingPlayers.FindAll(p => p.role == EnumRole.Werewolf).Count == 0)
+                {
+                    Debug.Log("Citizen Team Win!!!");
+                    yield break;
+                }
             }
         }
 
@@ -81,9 +93,6 @@ namespace Script
             you.Vote(_players, () => _players[index].id);
             var livingPlayers = _players.FindAll(player => !player.isDead);
             Debug.Log ("Vote Result: " + string.Join(", ", livingPlayers.ConvertAll(p => p.id + ": " + livingPlayers.Count(p2 => p2.voteFor == p.id) ).ToArray()));
-//            Debug.Log("Vote Result:");
-//            _players.ForEach(player => Debug.Log(player.id + ":" + player.votedNum));
-//            _gameManager.ShowResult();
         }
     }
 }

@@ -59,9 +59,9 @@ namespace Script
 			
 			if (votedPlayersDic.Count == 1)
 			{
-				var votedPlayerId = _players.Find(player => player.id == votedPlayersDic.First().Key);
-				votedPlayerId.isDead = true;
-				Debug.Log("Player: \"" + votedPlayerId + "\" was Executed.");
+				var votedPlayer = _players.Find(player => player.id == votedPlayersDic.First().Key);
+				votedPlayer.isDead = true;
+				Debug.Log("Player: \"" + votedPlayer.id + "\" was Executed.");
 			}
 			else
 			{
